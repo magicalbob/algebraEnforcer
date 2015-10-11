@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>Question {{ qNum }}</h2>
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+  <form action="{{ url_for('show_question') }}" method=post>
+    <dl>
+      <dt>{{ formula_1 }}
+      <dt>{{ formula_2 }}
+      <dt>x =
+      <dd><input type=text name=answerX>
+      <dt>y =
+      <dd><input type=text name=answerY>
+      <dd><input type=submit value=Answer>
+    </dl>
+  </form>
+{% endblock %}
