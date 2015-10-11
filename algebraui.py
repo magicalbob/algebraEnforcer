@@ -75,7 +75,6 @@ def show_answer():
   if (str(request.form['answerX']) == str(session['_alg_x']) and 
       str(request.form['answerY']) == str(session['_alg_y'])):
     if session['_q_count'] == 1:
-      print "RIGHT"
       model.q1_right(request.environ['REMOTE_ADDR'],
                      session['_timestamp'],
                      datetime.datetime.now()

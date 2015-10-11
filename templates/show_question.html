@@ -2,15 +2,22 @@
 {% block body %}
   <h2>Question {{ qNum }}</h2>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+  {{ formula_1 }}<br>
+  {{ formula_2 }}<br>
   <form action="{{ url_for('show_question') }}" method=post>
     <dl>
-      <dt>{{ formula_1 }}
-      <dt>{{ formula_2 }}
       <dt>x =
       <dd><input type=text name=answerX>
+    </dl>
+    <dl>
       <dt>y =
       <dd><input type=text name=answerY>
-      <dd><input type=submit value=Answer>
+    </dl>
+    <dl>
+    <dd><input type=submit value=Answer>
     </dl>
   </form>
+  <h3>Workings:</h3>
+  <textarea name=scratchpad rows=20 cols=80>
+  </textarea>
 {% endblock %}
