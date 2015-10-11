@@ -13,10 +13,14 @@ from flask import Flask, request, session, g, redirect, url_for, abort, \
 from algebra import Algebra
 import os
 import syslog
+import datetime
+from model import model
 
 # configuration
 DEBUG = True
 SECRET_KEY = 'development key'
+DATABASE = 'database/results.db'
+DB_SCHEMA = 'schema.sql'
 
 # create our little application :)
 app = Flask(__name__)
@@ -31,6 +35,9 @@ def start_up():
   if request.method == 'GET':
     syslog.syslog("Algebra: Request for '/' from %s" % (request.environ['REMOTE_ADDR']))
     session['_q_count']=1
+    session['_timestamp']=str(datetime.datetime.now())[:19]
+    print "DEBUG: %s" % (session['_timestamp'])
+    model.create_results(request.environ['REMOTE_ADDR'],session['_timestamp'])
     return render_template('start_up.html')
   else:
     return redirect(url_for('show_question'))
@@ -64,21 +71,60 @@ def show_question():
 @app.route('/question',methods=['POST'])
 def show_answer():
   error = None
+  print "Q# = %s" % (session['_q_count'])
   if (str(request.form['answerX']) == str(session['_alg_x']) and 
       str(request.form['answerY']) == str(session['_alg_y'])):
+    if session['_q_count'] == 1:
+      print "RIGHT"
+      model.q1_right(request.environ['REMOTE_ADDR'],
+                     session['_timestamp'],
+                     datetime.datetime.now()
+                    )
+    elif session['_q_count'] == 2:
+      model.q2_right(request.environ['REMOTE_ADDR'],
+                     session['_timestamp'],
+                     datetime.datetime.now()
+                    )
+    elif session['_q_count'] == 3:
+      model.q3_right(request.environ['REMOTE_ADDR'],
+                     session['_timestamp'],
+                     datetime.datetime.now()
+                    )
+    else:
+      syslog("Just got answer for question %s ... something is wrong!" %
+             (session['_q_count']))
     xAlg = makeQ(True)   
     session['_q_count']+=1 
     if session['_q_count'] > 3:
+      session['_q_count']=1
       os.system("salt 'tc600' cmd.run 'route add 0.0.0.0 mask 0.0.0.0 192.168.2.1'")
       syslog.syslog("Algebra: Internet restored by %s" % (request.environ['REMOTE_ADDR']))
       return render_template('well_done.html')
     else:
       flash("Well done that's right. Here's another one.")
   else:
+    if session['_q_count'] == 1:
+      print "WRONG"
+      model.q1_wrong(request.environ['REMOTE_ADDR'],
+                     session['_timestamp']
+                    )
+    elif session['_q_count'] == 2:
+      model.q2_wrong(request.environ['REMOTE_ADDR'],
+                     session['_timestamp']
+                    )
+    elif session['_q_count'] == 3:
+      model.q3_wrong(request.environ['REMOTE_ADDR'],
+                     session['_timestamp']
+                    )
+    else:
+      syslog("Just got question %s wrong ... something is really wrong!" %
+             (session['_q_count']))
     xAlg = makeQ(False)    
     flash("Oops! That is wrong. Try again.")
 
   return render_template('show_question.html',qNum=session['_q_count'],error=error,formula_1=xAlg.disp1,formula_2=xAlg.disp2)
 
 if __name__ == '__main__':
+    model = model(app.config['DATABASE'])
+    model.init_db(app.open_resource(DB_SCHEMA, mode='r'))
     app.run(host='0.0.0.0',port=5001)
