@@ -19,7 +19,7 @@ from model import model
 # configuration
 DEBUG = True
 SECRET_KEY = 'development key'
-DATABASE = 'database/results.db'
+DATABASE = '/opt/algebra/database/results.db'
 DB_SCHEMA = 'schema.sql'
 
 # create our little application :)
@@ -34,12 +34,11 @@ app.config.from_object(__name__)
 def start_up():
   if request.method == 'GET':
     syslog.syslog("Algebra: Request for '/' from %s" % (request.environ['REMOTE_ADDR']))
-    session['_q_count']=1
-    session['_timestamp']=str(datetime.datetime.now())[:19]
-    print "DEBUG: %s" % (session['_timestamp'])
-    model.create_results(request.environ['REMOTE_ADDR'],session['_timestamp'])
     return render_template('start_up.html')
   else:
+    session['_q_count']=1
+    session['_timestamp']=str(datetime.datetime.now())[:19]
+    model.create_results(request.environ['REMOTE_ADDR'],session['_timestamp'])
     return redirect(url_for('show_question'))
 
 def makeQ(new_quest):
@@ -71,7 +70,6 @@ def show_question():
 @app.route('/question',methods=['POST'])
 def show_answer():
   error = None
-  print "Q# = %s" % (session['_q_count'])
   if (str(request.form['answerX']) == str(session['_alg_x']) and 
       str(request.form['answerY']) == str(session['_alg_y'])):
     if session['_q_count'] == 1:
@@ -103,7 +101,6 @@ def show_answer():
       flash("Well done that's right. Here's another one.")
   else:
     if session['_q_count'] == 1:
-      print "WRONG"
       model.q1_wrong(request.environ['REMOTE_ADDR'],
                      session['_timestamp']
                     )
