@@ -143,6 +143,12 @@ input {
   line-height: normal;
 }
 input[type="checkbox"],
+input[type="text"] {
+    border-radius: 25px;
+    border: 2px solid #8AC007;
+    padding: 0px; 
+    padding-left: 15px;
+}
 input[type="radio"] {
   box-sizing: border-box;
   padding: 0;
