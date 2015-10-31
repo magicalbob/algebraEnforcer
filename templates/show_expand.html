@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h2>Question {{ qNum }}</h2>
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+  Expand and simplify:<br><br>
+  {{ unexpanded }}<br><br>
+  <form action="{{ url_for('show_question') }}" method=post>
+    <select name="sign1">
+      <option value="1">+</option>
+      <option value="-1">-</option>
+    </select>
+    <input type=text name=answerX2>x<sup>2</sup> 
+    <select name="sign2">
+      <option value="1">+</option>
+      <option value="-1">-</option>
+    </select>
+    <input type=text name=answerXY>xy 
+    <select name="sign3">
+      <option value="1">+</option>
+      <option value="-1">-</option>
+    </select>
+    <input type=text name=answerY2>y<sup>2</sup>
+    <br><br>
+    <input type=submit value=Answer>
+  </form>
+  <h3>Workings:</h3>
+  <textarea name=scratchpad rows=20 cols=80>
+  </textarea>
+{% endblock %}

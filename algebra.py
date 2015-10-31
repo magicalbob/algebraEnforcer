@@ -4,6 +4,7 @@ import random
 
 class Algebra:
   def __init__(self):
+    # simultaneous equation coefficients
     self.a = 0
     self.b = 0
     self.c = 0
@@ -14,8 +15,28 @@ class Algebra:
     self.h = 0
     self.x = 0
     self.y = 0
+    # expand & simplify coefficients and question
+    self.x_squared = 0
+    self.x_y = 0
+    self.y_squared = 0
+    self.expQuestion = ''
+    # question type
+    # 0 = none
+    # 1 = simultaneous equation
+    # 2 = expand & simplify
+    self.q_type = 0
 
   def makeQuestion(self):
+    self.q_type = random.randint(1,2)
+#    self.q_type = 1
+    if self.q_type == 1:
+      self.makeQuestSimultaneous()
+    elif self.q_type == 2:
+      self.makeQuestExpand()
+    else:
+      print "Eeeek! Question type invalid"
+
+  def makeQuestSimultaneous(self):
     haveanothergo = True
     while haveanothergo:
       haveanothergo = False
@@ -81,10 +102,47 @@ class Algebra:
       return -1
     return 1
 
+  def makeQuestExpand(self):
+    coef1 = 0
+    coef2 = 0
+    coef3 = 0
+    coef4 = 0
+
+    while coef1 == 0:
+      coef1 = random.randint(1,10) * self.randSign()
+    while coef2 == 0:
+      coef2 = random.randint(1,10) * self.randSign()
+    while coef3 == 0:
+      coef3 = random.randint(1,10) * self.randSign()
+    while coef4 == 0:
+      coef4 = random.randint(1,10) * self.randSign()
+
+    self.x_squared = coef1 * coef3
+    self.x_y = (coef1 * coef4) + (coef2 * coef3)
+    self.y_squared = coef2 * coef4
+    self.expQuestion = "(%sx %s %sy)(%sx %s %sy)" % (
+                        coef1,
+                        ["-","+"][coef2 > 0],
+                        abs(coef2),
+                        coef3,
+                        ["-","+"][coef4 > 0],
+                        abs(coef4))
+
+
 if __name__ == '__main__':
   xAlg=Algebra()
   xAlg.makeQuestion()
-  print xAlg.disp1
-  print xAlg.disp2
-  print xAlg.x
-  print xAlg.y
+  if xAlg.q_type == 1:
+    print "Simultaneous Equation:"
+    print xAlg.disp1
+    print xAlg.disp2
+    print xAlg.x
+    print xAlg.y
+  elif xAlg.q_type == 2:
+    print "Expand And Simplify"
+    print xAlg.x_squared
+    print xAlg.x_y
+    print xAlg.y_squared
+    print xAlg.expQuestion
+  else:
+    print "WTF!"

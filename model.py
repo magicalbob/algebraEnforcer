@@ -32,33 +32,33 @@ class model():
                       [ip_addr, timestamp])
     self.sqlite_db.commit()
 
-  def q1_wrong(self,ip_addr,timestamp):
+  def q1_wrong(self,ip_addr,timestamp,q_type):
     self.get_db()
-    print "DEBUG: update results question_cnt=1, set q1_wrong_cnt = q1_wrong_cnt + 1 where ip_addr = '%s' and timestamp = '%s'" % (ip_addr, timestamp)
-    self.sqlite_db.execute("update results set question_cnt=1, q1_wrong_cnt = q1_wrong_cnt + 1 where ip_addr = '%s' and timestamp = '%s'" % (ip_addr, timestamp))
+    print "DEBUG: update results question_cnt=1, set q1_wrong_cnt = q1_wrong_cnt + 1, q1_type = %s where ip_addr = '%s' and timestamp = '%s'" % (q_type, ip_addr, timestamp)
+    self.sqlite_db.execute("update results set question_cnt=1, q1_wrong_cnt = q1_wrong_cnt + 1, q1_type = %s where ip_addr = '%s' and timestamp = '%s'" % (q_type, ip_addr, timestamp))
     self.sqlite_db.commit()
 
-  def q2_wrong(self,ip_addr,timestamp):
+  def q2_wrong(self,ip_addr,timestamp, q_type):
     self.get_db()
-    self.sqlite_db.execute("update results set question_cnt=2, q2_wrong_cnt = q2_wrong_cnt + 1 where ip_addr = '%s' and timestamp = '%s'" % (ip_addr, timestamp))
+    self.sqlite_db.execute("update results set question_cnt=2, q2_wrong_cnt = q2_wrong_cnt + 1, q2_type = %s where ip_addr = '%s' and timestamp = '%s'" % (q_type, ip_addr, timestamp))
     self.sqlite_db.commit()
 
-  def q3_wrong(self,ip_addr,timestamp):
+  def q3_wrong(self,ip_addr,timestamp, q_type):
     self.get_db()
-    self.sqlite_db.execute("update results set question_cnt=3, q3_wrong_cnt = q3_wrong_cnt + 1 where ip_addr = '%s' and timestamp = '%s'" % (ip_addr, timestamp))
+    self.sqlite_db.execute("update results set question_cnt=3, q3_wrong_cnt = q3_wrong_cnt + 1, q3_type = %s where ip_addr = '%s' and timestamp = '%s'" % (q_type, ip_addr, timestamp))
     self.sqlite_db.commit()
 
-  def q1_right(self,ip_addr,timestamp, q1_timestamp):
+  def q1_right(self,ip_addr,timestamp, q1_timestamp, q_type):
     self.get_db()
-    self.sqlite_db.execute("update results set question_cnt=1, q1_timestamp = '%s' where ip_addr = '%s' and timestamp = '%s'" % (q1_timestamp, ip_addr, timestamp))
+    self.sqlite_db.execute("update results set question_cnt=1, q1_timestamp = '%s', q1_type = %s where ip_addr = '%s' and timestamp = '%s'" % (q1_timestamp, q_type, ip_addr, timestamp))
     self.sqlite_db.commit()
 
-  def q2_right(self,ip_addr,timestamp, q2_timestamp):
+  def q2_right(self,ip_addr,timestamp, q2_timestamp, q_type):
     self.get_db()
-    self.sqlite_db.execute("update results set question_cnt=3, q2_timestamp = '%s' where ip_addr = '%s' and timestamp = '%s'" % (q2_timestamp, ip_addr, timestamp))
+    self.sqlite_db.execute("update results set question_cnt=3, q2_timestamp = '%s', q2_type = %s where ip_addr = '%s' and timestamp = '%s'" % (q2_timestamp, q_type, ip_addr, timestamp))
     self.sqlite_db.commit()
 
-  def q3_right(self,ip_addr,timestamp, q3_timestamp):
+  def q3_right(self,ip_addr,timestamp, q3_timestamp, q_type):
     self.get_db()
-    self.sqlite_db.execute("update results set question_cnt=3, q3_timestamp = '%s' where ip_addr = '%s' and timestamp = '%s'" % (q3_timestamp, ip_addr, timestamp))
+    self.sqlite_db.execute("update results set question_cnt=3, q3_timestamp = '%s', q3_type = %s where ip_addr = '%s' and timestamp = '%s'" % (q3_timestamp, q_type, ip_addr, timestamp))
     self.sqlite_db.commit()
