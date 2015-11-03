@@ -26,6 +26,19 @@ class model():
       self.sqlite_db.close()
       self.sqlite_db = None
 
+  def isResultForDay(self, theDay):
+    self.get_db()
+    cur = self.sqlite_db.execute('select count(1) from results where timestamp >= ? and question_cnt = 3',
+                                 [theDay])
+    curResult = cur.fetchall()
+    if len(curResult) < 1:
+      return False
+
+    if curResult[0][0] == 0:
+      return False
+
+    return True
+
   def create_results(self,ip_addr,timestamp):
     self.get_db()
     self.sqlite_db.execute('insert into results (ip_addr, timestamp, question_cnt, q1_wrong_cnt, q2_wrong_cnt, q3_wrong_cnt) values (?, ?, 0, 0, 0, 0)',
