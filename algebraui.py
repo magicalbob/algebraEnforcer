@@ -16,6 +16,7 @@ import syslog
 import datetime
 from model import model
 import pickle
+from checkDone import doneToday
 
 # configuration
 DEBUG = True
@@ -65,6 +66,13 @@ def makeQ(new_quest):
       print "Y^2: %s" % (xAlg.y_squared)
 
     return xAlg
+
+@app.route('/checkstat',methods=['GET'])
+def check_down():
+  if doneToday(model):
+    return render_template('algebra_done.html')
+  else:
+    return render_template('algebra_not_done.html')
 
 @app.route('/question',methods=['GET'])
 def show_question():
