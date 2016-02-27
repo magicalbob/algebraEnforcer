@@ -2,10 +2,25 @@
 {% block body %}
   <h2>Question {{ qNum }}</h2>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-  Triangle with side lengths {{ side_a }}, {{ side_b }} and {{ side_c }}.
+  Triangle with side lengths {{ side_a }}, {{ side_b }} and {{ side_c }}.<br><br>
+  Heron's Formula:<br><br>
+  A = 
+  <span style="white-space: nowrap; font-size:larger">&radic;
+    <span style="text-decoration:overline;">
+      &nbsp;
+      p x (p - a) x (p - b) x (p - c)
+      &nbsp;
+    </span>
+  </span>
+  <br><br>
+  where:<br><br>
+  p = (a + b + c) / 2
+  <br><br>
+  a, b and c being the lengths of the sides of the triangle.
+  <br><br>
   <form action="{{ url_for('show_question') }}" method=post>
     <dl>
-      <dt>What's the area to 4 decimal places?
+      <dt style="width:20%;">What's the area to 4 decimal places?
       <dd><input type=text name=answerA>
     </dl>
     <dl>

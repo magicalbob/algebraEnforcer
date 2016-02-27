@@ -30,6 +30,7 @@ class Algebra:
 
   def makeQuestion(self):
     self.q_type = random.randint(1,3)
+    self.q_type = 3
     if self.q_type == 1:
       self.makeQuestSimultaneous()
     elif self.q_type == 2:
