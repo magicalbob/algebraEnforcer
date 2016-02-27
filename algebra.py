@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import random
+from math import sqrt
 
 class Algebra:
   def __init__(self):
@@ -25,14 +26,16 @@ class Algebra:
     # 1 = simultaneous equation
     # 2 = expand & simplify
     self.q_type = 0
+    self.side=[0,0,0]
 
   def makeQuestion(self):
-    self.q_type = random.randint(1,2)
-#    self.q_type = 1
+    self.q_type = random.randint(1,3)
     if self.q_type == 1:
       self.makeQuestSimultaneous()
     elif self.q_type == 2:
       self.makeQuestExpand()
+    elif self.q_type == 3:
+      self.makeQuestHeron()
     else:
       print "Eeeek! Question type invalid"
 
@@ -102,6 +105,20 @@ class Algebra:
       return -1
     return 1
 
+  def makeQuestHeron(self):
+    getSides=True
+    while (getSides):
+      a = random.randint(1,10)
+      b = random.randint(1,10)
+      c = random.randint(1,10)
+      if (a+b>c) and (a+c>b) and (c+b>a):
+        getSides=False
+    self.side[0] = a
+    self.side[1] = b
+    self.side[2] = c
+    self.perm=float(self.side[0]+self.side[1]+self.side[2])/2
+    self.heron="%.4f" % (sqrt(self.perm * (self.perm-self.side[0]) * (self.perm-self.side[1]) * (self.perm-self.side[2])))
+
   def makeQuestExpand(self):
     coef1 = 0
     coef2 = 0
@@ -144,5 +161,12 @@ if __name__ == '__main__':
     print xAlg.x_y
     print xAlg.y_squared
     print xAlg.expQuestion
+  elif xAlg.q_type == 3:
+    print "Heron's Formula"
+    print "Side 1: %d" % (xAlg.side[0])
+    print "Side 2: %d" % (xAlg.side[1])
+    print "Side 3: %d" % (xAlg.side[2])
+    print "p = %.2f" % (xAlg.perm)
+    print "Area = %s" % (xAlg.heron)
   else:
     print "WTF!"

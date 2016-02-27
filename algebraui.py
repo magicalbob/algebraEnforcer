@@ -64,6 +64,8 @@ def makeQ(new_quest):
       print "X^2: %s" % (xAlg.x_squared)
       print "XY: %s" % (xAlg.x_y)
       print "Y^2: %s" % (xAlg.y_squared)
+    elif xAlg.q_type == 3:
+      syslog.syslog("Algebra: New heron { (%d,%d,%d), p = %f, A = %s } from %s" % (xAlg.side[0], xAlg.side[1], xAlg.side[2], xAlg.perm, xAlg.heron, request.environ['REMOTE_ADDR']))
 
     return xAlg
 
@@ -86,6 +88,12 @@ def show_question():
       return render_template('show_expand.html',
                              qNum=session['_q_count'],
                              unexpanded=xAlg.expQuestion)
+    elif xAlg.q_type == 3:
+      return render_template('show_heron.html',
+                             qNum=session['_q_count'],
+                             side_a=xAlg.side[0],
+                             side_b=xAlg.side[1],
+                             side_c=xAlg.side[2])
 
 @app.route('/question',methods=['POST'])
 def show_answer():
@@ -107,6 +115,10 @@ def show_answer():
         isRight=True
     except:
       pass
+  elif xAlg.q_type == 3:
+    print "DEBUG HERON: %.4f" % (float(request.form['answerA']))
+    if (("%.4f" % (float(request.form['answerA']))) == xAlg.heron):
+      isRight=True
 
   if isRight == True: 
     if session['_q_count'] == 1:
@@ -178,6 +190,12 @@ def show_answer():
                            qNum=session['_q_count'],
                            error=error,
                            unexpanded=xAlg.expQuestion)
+  elif xAlg.q_type == 3:
+    return render_template('show_heron.html',
+                           qNum=session['_q_count'],
+                           side_a=xAlg.side[0],
+                           side_b=xAlg.side[1],
+                           side_c=xAlg.side[2])
 
 if __name__ == '__main__':
     model = model(app.config['DATABASE'])
