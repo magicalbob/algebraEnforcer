@@ -4,7 +4,7 @@
     Algebra Tester
     ~~~~~~~~~~~~~~
 
-    Tortue by algebra.
+    Torture by algebra.
 
 """
 
