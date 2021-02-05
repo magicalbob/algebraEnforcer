@@ -1,0 +1,2 @@
+secret_key: 'development key'
+database: './database/results.db'
