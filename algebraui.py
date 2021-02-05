@@ -43,7 +43,6 @@ def start_up():
   else:
     session['_q_count']=1
     session['_timestamp']=str(datetime.datetime.now())[:19]
-    print("DEBUG 1")
     model.create_results(request.environ['REMOTE_ADDR'],session['_timestamp'])
     return redirect(url_for('show_question'))
 
@@ -57,16 +56,16 @@ def makeQ(new_quest):
 
     if xAlg.q_type == 1:
       syslog.syslog("Algebra: New simultaneous equations { Q1: %s, Q2: %s, X = %s, Y = %s } from %s" % (xAlg.disp1, xAlg.disp2, xAlg.x, xAlg.y, request.environ['REMOTE_ADDR']))
-      print("Q1: %s" % (xAlg.disp1))
-      print("Q2: %s" % (xAlg.disp2))
-      print("X: %s" % (xAlg.x))
-      print("Y: %s" % (xAlg.y))
+      syslog.syslog("Q1: %s" % (xAlg.disp1))
+      syslog.syslog("Q2: %s" % (xAlg.disp2))
+      syslog.syslog("X: %s" % (xAlg.x))
+      syslog.syslog("Y: %s" % (xAlg.y))
     elif xAlg.q_type == 2:
       syslog.syslog("Algebra: New expand / simplify { Q: %s, X^2 = %s, XY = %s, Y^2 = %s } from %s" % (xAlg.expQuestion, xAlg.x_squared, xAlg.x_y, xAlg.y_squared, request.environ['REMOTE_ADDR']))
-      print("Q: %s" % (xAlg.expQuestion))
-      print("X^2: %s" % (xAlg.x_squared))
-      print("XY: %s" % (xAlg.x_y))
-      print("Y^2: %s" % (xAlg.y_squared))
+      syslog.syslog("Q: %s" % (xAlg.expQuestion))
+      syslog.syslog("X^2: %s" % (xAlg.x_squared))
+      syslog.syslog("XY: %s" % (xAlg.x_y))
+      syslog.syslog("Y^2: %s" % (xAlg.y_squared))
     elif xAlg.q_type == 3:
       syslog.syslog("Algebra: New heron { (%d,%d,%d), p = %f, A = %s } from %s" % (xAlg.side[0], xAlg.side[1], xAlg.side[2], xAlg.perm, xAlg.heron, request.environ['REMOTE_ADDR']))
 
@@ -119,27 +118,24 @@ def show_answer():
     except:
       pass
   elif xAlg.q_type == 3:
-    print("DEBUG HERON: %.4f" % (float(request.form['answerA'])))
+    syslog.syslog("HERON: %.4f" % (float(request.form['answerA'])))
     if (("%.4f" % (float(request.form['answerA']))) == xAlg.heron):
       isRight=True
 
   if isRight == True: 
     if session['_q_count'] == 1:
-      print("DEBUG 2")
       model.q1_right(request.environ['REMOTE_ADDR'],
                      session['_timestamp'],
                      datetime.datetime.now(),
                      xAlg.q_type
                     )
     elif session['_q_count'] == 2:
-      print("DEBUG 3")
       model.q2_right(request.environ['REMOTE_ADDR'],
                      session['_timestamp'],
                      datetime.datetime.now(),
                      xAlg.q_type
                     )
     elif session['_q_count'] == 3:
-      print("DEBUG 4")
       model.q3_right(request.environ['REMOTE_ADDR'],
                      session['_timestamp'],
                      datetime.datetime.now(),
@@ -159,19 +155,16 @@ def show_answer():
       flash("Well done that's right. Here's another one.")
   else:
     if session['_q_count'] == 1:
-      print("DEBUG 5")
       model.q1_wrong(request.environ['REMOTE_ADDR'],
                      session['_timestamp'],
                      xAlg.q_type
                     )
     elif session['_q_count'] == 2:
-      print("DEBUG 6")
       model.q2_wrong(request.environ['REMOTE_ADDR'],
                      session['_timestamp'],
                      xAlg.q_type
                     )
     elif session['_q_count'] == 3:
-      print("DEBUG 7")
       model.q3_wrong(request.environ['REMOTE_ADDR'],
                      session['_timestamp'],
                      xAlg.q_type

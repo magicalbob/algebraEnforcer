@@ -49,7 +49,7 @@ class model():
 
   def q1_wrong(self,ip_addr,timestamp,q_type):
     self.get_db()
-    print("DEBUG: update results question_cnt=1, set q1_wrong_cnt = q1_wrong_cnt + 1, q1_type = %s where ip_addr = '%s' and timestamp = '%s'" % (q_type, ip_addr, timestamp))
+    syslog.syslog("update results question_cnt=1, set q1_wrong_cnt = q1_wrong_cnt + 1, q1_type = %s where ip_addr = '%s' and timestamp = '%s'" % (q_type, ip_addr, timestamp))
     self.sqlite_db.execute("update results set question_cnt=1, q1_wrong_cnt = q1_wrong_cnt + 1, q1_type = %s where ip_addr = '%s' and timestamp = '%s'" % (q_type, ip_addr, timestamp))
     self.sqlite_db.commit()
 
