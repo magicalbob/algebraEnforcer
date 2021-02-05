@@ -25,6 +25,7 @@ with open('algebra.yaml', 'r') as confile:
     conf = yaml.safe_load(confile)
 DATABASE = conf['database']
 SECRET_KEY = conf['secret_key']
+INTERNET_RESTORE = conf['internet_restore']
 
 # create our little application :)
 app = Flask(__name__)
@@ -150,7 +151,7 @@ def show_answer():
     session['_q_count']+=1 
     if session['_q_count'] > 3:
       session['_q_count']=1
-      os.system("salt 'tc600' cmd.run 'route add 0.0.0.0 mask 0.0.0.0 192.168.2.1'")
+      os.system(INTERNET_RESTORE)
       syslog.syslog("Algebra: Internet restored by %s" % (request.environ['REMOTE_ADDR']))
       return render_template('well_done.html')
     else:

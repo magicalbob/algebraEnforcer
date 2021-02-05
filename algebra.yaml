@@ -1,2 +1,3 @@
 secret_key: 'development key'
 database: './database/results.db'
+internet_restore: 'echo "do something"'
