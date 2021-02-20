@@ -50,7 +50,7 @@ def start_up():
 
 def make_q(new_quest):
     """ need a new question, make one """
-    if new_quest == True:
+    if new_quest:
         x_alg = Algebra()
         x_alg.make_question()
         session['_alg_obj']=pickle.dumps(x_alg,-1)
@@ -101,40 +101,90 @@ def make_q(new_quest):
 
 @app.route('/checkstat',methods=['GET'])
 def check_down():
+    """ check whether algebra has been done or not """
     if doneToday(model):
         return render_template('algebra_done.html')
-    else:
-        return render_template('algebra_not_done.html')
+
+    return render_template('algebra_not_done.html')
 
 @app.route('/question',methods=['GET'])
 def show_question():
+    """ display the question """
     x_alg = make_q(True)
     if x_alg.q_type == 1:
         return render_template('show_question.html',
                                qNum=session['_q_count'],
                                formula_1=x_alg.disp1,
                                formula_2=x_alg.disp2)
-    elif x_alg.q_type == 2:
+
+    if x_alg.q_type == 2:
         return render_template('show_expand.html',
                                qNum=session['_q_count'],
                                unexpanded=x_alg.exp_question)
-    elif x_alg.q_type == 3:
+
+    if x_alg.q_type == 3:
         return render_template('show_heron.html',
                                qNum=session['_q_count'],
                                side_a=x_alg.side[0],
                                side_b=x_alg.side[1],
                                side_c=x_alg.side[2])
 
-@app.route('/question',methods=['POST'])
-def show_answer():
-    error = None
-    x_alg = pickle.loads(session['_alg_obj'])
-    isRight=False
+    return render_template('start_up.html')
+
+def record_is_right(is_right,
+                   q_type):
+    """ function to update db with right answer """
+    if is_right:
+        if session['_q_count'] == 1:
+            model.q1_right(request.environ['REMOTE_ADDR'],
+                           session['_timestamp'],
+                           datetime.datetime.now(),
+                           q_type
+                          )
+
+        if session['_q_count'] == 2:
+            model.q2_right(request.environ['REMOTE_ADDR'],
+                           session['_timestamp'],
+                           datetime.datetime.now(),
+                           q_type
+                          )
+
+        if session['_q_count'] == 3:
+            model.q3_right(request.environ['REMOTE_ADDR'],
+                           session['_timestamp'],
+                           datetime.datetime.now(),
+                           q_type
+                          )
+
+def record_is_wrong(q_type):
+    """ function to update db with wrong answer """
+    if session['_q_count'] == 1:
+        model.q1_wrong(request.environ['REMOTE_ADDR'],
+                       session['_timestamp'],
+                       q_type
+                      )
+
+    if session['_q_count'] == 2:
+        model.q2_wrong(request.environ['REMOTE_ADDR'],
+                       session['_timestamp'],
+                       q_type
+                      )
+
+    if session['_q_count'] == 3:
+        model.q3_wrong(request.environ['REMOTE_ADDR'],
+                       session['_timestamp'],
+                       q_type
+                      )
+
+def check_is_right(x_alg):
+    """ check if the answer is right """
+    is_right=False
     if x_alg.q_type == 1:
         if (str(request.form['answerX']) == str(x_alg.var_x) and
             str(request.form['answerY']) == str(x_alg.var_y)):
-            isRight=True
-    elif x_alg.q_type == 2:
+            is_right=True
+
+    if x_alg.q_type == 2:
         try:
             if (str(int(request.form['sign1'])*int(request.form['answerX2'])) ==
                 str(x_alg.var_x_squared) and
@@ -142,64 +192,42 @@ def show_answer():
                 str(x_alg.var_x_y) and
                 str(int(request.form['sign3'])*int(request.form['answerY2'])) ==
                 str(x_alg.var_y_squared)):
-                isRight=True
-        except:
-            pass
-    elif x_alg.q_type == 3:
+                is_right=True
+        except ValueError as an_exception:
+            syslog.syslog("ValueError %s" % (an_exception))
+        except ZeroDivisionError as an_exception:
+            syslog.syslog("ValueError %s" % (an_exception))
+
+    if x_alg.q_type == 3:
         syslog.syslog("HERON: %.4f" % (float(request.form['answerA'])))
         if ("%.4f" % (float(request.form['answerA']))) == x_alg.heron:
-            isRight=True
+            is_right=True
 
-    if isRight == True:
-        if session['_q_count'] == 1:
-            model.q1_right(request.environ['REMOTE_ADDR'],
-                           session['_timestamp'],
-                           datetime.datetime.now(),
-                           x_alg.q_type
-                          )
-        elif session['_q_count'] == 2:
-            model.q2_right(request.environ['REMOTE_ADDR'],
-                           session['_timestamp'],
-                           datetime.datetime.now(),
-                           x_alg.q_type
-                          )
-        elif session['_q_count'] == 3:
-            model.q3_right(request.environ['REMOTE_ADDR'],
-                           session['_timestamp'],
-                           datetime.datetime.now(),
-                           x_alg.q_type
-                          )
-        else:
-            syslog("Just got answer for question %s ... something is wrong!" %
-                   (session['_q_count']))
+    return is_right
+
+@app.route('/question',methods=['POST'])
+def show_answer():
+    """ show the answer """
+    error = None
+    x_alg = pickle.loads(session['_alg_obj'])
+    is_right = check_is_right(x_alg)
+
+    record_is_right(is_right,
+                   x_alg.q_type)
+
+    if is_right:
         session['_q_count']+=1
         if session['_q_count'] > 3:
             session['_q_count']=1
             os.system(INTERNET_RESTORE)
             syslog.syslog("Algebra: Internet restored by %s" % (request.environ['REMOTE_ADDR']))
             return render_template('well_done.html')
-        else:
-            x_alg = make_q(True)
-            flash("Well done that's right. Here's another one.")
+
+        x_alg = make_q(True)
+        flash("Well done that's right. Here's another one.")
     else:
-        if session['_q_count'] == 1:
-            model.q1_wrong(request.environ['REMOTE_ADDR'],
-                           session['_timestamp'],
-                           x_alg.q_type
-                          )
-        elif session['_q_count'] == 2:
-            model.q2_wrong(request.environ['REMOTE_ADDR'],
-                           session['_timestamp'],
-                           x_alg.q_type
-                          )
-        elif session['_q_count'] == 3:
-            model.q3_wrong(request.environ['REMOTE_ADDR'],
-                           session['_timestamp'],
-                           x_alg.q_type
-                          )
-        else:
-            syslog.syslog("Just got question %s wrong ... something is really wrong!" %
-                   (session['_q_count']))
+        record_is_wrong(x_alg.q_type)
+
         x_alg = make_q(False)
         flash("Oops! That is wrong. Try again.")
 
@@ -222,6 +250,8 @@ def show_answer():
                                side_a=x_alg.side[0],
                                side_b=x_alg.side[1],
                                side_c=x_alg.side[2])
+
+    return render_template('start_up.html')
 
 if __name__ == '__main__':
     model = Model(app.config['DATABASE'])
