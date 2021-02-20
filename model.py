@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from sqlite3 import dbapi2 as sqlite3
+import syslog
 
 class model():
   def __init__(self, db_name):
