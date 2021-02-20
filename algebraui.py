@@ -22,7 +22,7 @@ from flask import render_template
 from flask import flash
 from algebra import Algebra
 from model import Model
-from checkDone import doneToday
+from checkdone import done_today
 
 # configuration
 DB_SCHEMA = 'schema.sql'
@@ -102,7 +102,7 @@ def make_q(new_quest):
 @app.route('/checkstat',methods=['GET'])
 def check_down():
     """ check whether algebra has been done or not """
-    if doneToday(model):
+    if done_today(model):
         return render_template('algebra_done.html')
 
     return render_template('algebra_not_done.html')
