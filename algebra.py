@@ -48,6 +48,7 @@ class Algebra:
             print("Eeeek! Question type invalid")
 
     def make_quest_simultaneous(self):
+        """ Function to work out simultaneous equation questions to ask """
         haveanothergo = True
         while haveanothergo:
             haveanothergo = False
@@ -101,6 +102,7 @@ class Algebra:
         print("Answer is X = %s, Y = %s" % (self.var_x, self.var_y))
 
     def display_question(self, var_a, var_b, var_c, var_d):
+        """ Work out questions to ask """
         if var_a == 1:
             disp_a = "x"
         else:
@@ -128,12 +130,14 @@ class Algebra:
         return "%s%s = %s%s" % (disp_a, disp_c, disp_b, disp_d)
 
     def rand_sign(self):
+        """ Function to supply random sign """
         r_sign = random.randint(0,1)
         if r_sign == 0:
             return -1
         return 1
 
     def make_quest_heron(self):
+        """ Function to work out heron questions to ask """
         get_sides=True
         while get_sides:
             var_a = random.randint(1, 10)
@@ -154,6 +158,7 @@ class Algebra:
         print("Answer is %s" % (self.heron))
 
     def make_quest_expand(self):
+        """ Function to work out expansion questions to ask """
         coef1 = 0
         coef2 = 0
         coef3 = 0
@@ -189,13 +194,13 @@ if __name__ == '__main__':
     X_ALG.make_question()
     if X_ALG.q_type == 1:
         print ("Simultaneous Equation: %s, %s, %s, %s" % (
-              X_ALG.disp1, X_ALG.disp2,  X_ALG.x,  X_ALG.y
+              X_ALG.disp1, X_ALG.disp2,  X_ALG.var_x,  X_ALG.var_y
                ))
     elif X_ALG.q_type == 2:
         print("Expand And Simplify")
-        print(X_ALG.x_squared)
-        print(X_ALG.x_y)
-        print(X_ALG.y_squared)
+        print(X_ALG.var_x_squared)
+        print(X_ALG.var_x_y)
+        print(X_ALG.var_y_squared)
         print(X_ALG.exp_question)
     elif X_ALG.q_type == 3:
         print("Heron's Formula")
