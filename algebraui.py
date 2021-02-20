@@ -226,4 +226,4 @@ def show_answer():
 if __name__ == '__main__':
     model = Model(app.config['DATABASE'])
     model.init_db(app.open_resource(DB_SCHEMA, mode='r'))
-    app.run(host='0.0.0.0',port=5001)
+    app.run(host='0.0.0.0',port=5002)
