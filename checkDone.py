@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-from model import model
+from model import Model
 import os
 import time
 
 DATABASE = '/opt/algebra/database/results.db'
 
 def doneToday(model):
-  chkToday=model.isResultForDay(time.strftime("%Y-%m-%d"))  
+  chkToday=model.is_result_for_day(time.strftime("%Y-%m-%d"))  
   if chkToday == True:
     print("YES")
     return True

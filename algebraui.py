@@ -21,7 +21,7 @@ from flask import url_for
 from flask import render_template
 from flask import flash
 from algebra import Algebra
-from model import model
+from model import Model
 from checkDone import doneToday
 
 # configuration
@@ -224,6 +224,6 @@ def show_answer():
                                side_c=x_alg.side[2])
 
 if __name__ == '__main__':
-    model = model(app.config['DATABASE'])
+    model = Model(app.config['DATABASE'])
     model.init_db(app.open_resource(DB_SCHEMA, mode='r'))
     app.run(host='0.0.0.0',port=5001)
