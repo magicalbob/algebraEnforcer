@@ -57,42 +57,42 @@ def make_q(new_quest):
     else:
         x_alg = pickle.loads(session['_alg_obj'])
 
-    if x_alg.q_type == 1:
+    if x_alg.variable['q_type'] == 1:
         syslog.syslog(
             "Algebra: New simultaneous equations { Q1: %s, Q2: %s, X = %s, Y = %s } from %s" % (
-                x_alg.disp1,
-                x_alg.disp2,
-                x_alg.var_x,
-                x_alg.var_y,
+                x_alg.variable['disp1'],
+                x_alg.variable['disp2'],
+                x_alg.variable['x'],
+                x_alg.variable['y'],
                 request.environ['REMOTE_ADDR']
                )
         )
-        syslog.syslog("Q1: %s" % (x_alg.disp1))
-        syslog.syslog("Q2: %s" % (x_alg.disp2))
-        syslog.syslog("X: %s" % (x_alg.var_x))
-        syslog.syslog("Y: %s" % (x_alg.var_y))
-    elif x_alg.q_type == 2:
+        syslog.syslog("Q1: %s" % (x_alg.variable['disp1']))
+        syslog.syslog("Q2: %s" % (x_alg.variable['disp2']))
+        syslog.syslog("X: %s" % (x_alg.variable['x']))
+        syslog.syslog("Y: %s" % (x_alg.variable['y']))
+    elif x_alg.variable['q_type'] == 2:
         syslog.syslog(
             "Algebra: New expand / simplify { Q: %s, X^2 = %s, XY = %s, Y^2 = %s } from %s" % (
-                x_alg.exp_question,
-                x_alg.var_x_squared,
-                x_alg.var_x_y,
-                x_alg.var_y_squared,
+                x_alg.variable['exp_question'],
+                x_alg.variable['x_squared'],
+                x_alg.variable['x_y'],
+                x_alg.variable['y_squared'],
                 request.environ['REMOTE_ADDR']
               )
         )
-        syslog.syslog("Q: %s" % (x_alg.exp_question))
-        syslog.syslog("X^2: %s" % (x_alg.var_x_squared))
-        syslog.syslog("XY: %s" % (x_alg.var_x_y))
-        syslog.syslog("Y^2: %s" % (x_alg.var_y_squared))
-    elif x_alg.q_type == 3:
+        syslog.syslog("Q: %s" % (x_alg.variable['exp_question']))
+        syslog.syslog("X^2: %s" % (x_alg.variable['x_squared']))
+        syslog.syslog("XY: %s" % (x_alg.variable['x_y']))
+        syslog.syslog("Y^2: %s" % (x_alg.variable['y_squared']))
+    elif x_alg.variable['q_type'] == 3:
         syslog.syslog(
             "Algebra: New heron { (%d,%d,%d), p = %f, A = %s } from %s" % (
-                x_alg.side[0],
-                x_alg.side[1],
-                x_alg.side[2],
-                x_alg.perm,
-                x_alg.heron,
+                x_alg.variable['side'][0],
+                x_alg.variable['side'][1],
+                x_alg.variable['side'][2],
+                x_alg.variable['perm'],
+                x_alg.variable['heron'],
                 request.environ['REMOTE_ADDR']
             )
         )
@@ -111,23 +111,23 @@ def check_down():
 def show_question():
     """ display the question """
     x_alg = make_q(True)
-    if x_alg.q_type == 1:
+    if x_alg.variable['q_type'] == 1:
         return render_template('show_question.html',
                                qNum=session['_q_count'],
-                               formula_1=x_alg.disp1,
-                               formula_2=x_alg.disp2)
+                               formula_1=x_alg.variable['disp1'],
+                               formula_2=x_alg.variable['disp2'])
 
-    if x_alg.q_type == 2:
+    if x_alg.variable['q_type'] == 2:
         return render_template('show_expand.html',
                                qNum=session['_q_count'],
-                               unexpanded=x_alg.exp_question)
+                               unexpanded=x_alg.variable['exp_question'])
 
-    if x_alg.q_type == 3:
+    if x_alg.variable['q_type'] == 3:
         return render_template('show_heron.html',
                                qNum=session['_q_count'],
-                               side_a=x_alg.side[0],
-                               side_b=x_alg.side[1],
-                               side_c=x_alg.side[2])
+                               side_a=x_alg.variable['side'][0],
+                               side_b=x_alg.variable['side'][1],
+                               side_c=x_alg.variable['side'][2])
 
     return render_template('start_up.html')
 
@@ -179,28 +179,28 @@ def record_is_wrong(q_type):
 def check_is_right(x_alg):
     """ check if the answer is right """
     is_right=False
-    if x_alg.q_type == 1:
-        if (str(request.form['answerX']) == str(x_alg.var_x) and
-            str(request.form['answerY']) == str(x_alg.var_y)):
+    if x_alg.variable['q_type'] == 1:
+        if (str(request.form['answerX']) == str(x_alg.variable['x']) and
+            str(request.form['answerY']) == str(x_alg.variable['y'])):
             is_right=True
 
-    if x_alg.q_type == 2:
+    if x_alg.variable['q_type'] == 2:
         try:
             if (str(int(request.form['sign1'])*int(request.form['answerX2'])) ==
-                str(x_alg.var_x_squared) and
+                str(x_alg.variable['x_squared']) and
                 str(int(request.form['sign2'])*int(request.form['answerXY'])) ==
-                str(x_alg.var_x_y) and
+                str(x_alg.variable['x_y']) and
                 str(int(request.form['sign3'])*int(request.form['answerY2'])) ==
-                str(x_alg.var_y_squared)):
+                str(x_alg.variable['y_squared'])):
                 is_right=True
         except ValueError as an_exception:
             syslog.syslog("ValueError %s" % (an_exception))
         except ZeroDivisionError as an_exception:
             syslog.syslog("ValueError %s" % (an_exception))
 
-    if x_alg.q_type == 3:
+    if x_alg.variable['q_type'] == 3:
         syslog.syslog("HERON: %.4f" % (float(request.form['answerA'])))
-        if ("%.4f" % (float(request.form['answerA']))) == x_alg.heron:
+        if ("%.4f" % (float(request.form['answerA']))) == x_alg.variable['heron']:
             is_right=True
 
     return is_right
@@ -213,7 +213,7 @@ def show_answer():
     is_right = check_is_right(x_alg)
 
     record_is_right(is_right,
-                   x_alg.q_type)
+                   x_alg.variable['q_type'])
 
     if is_right:
         session['_q_count']+=1
@@ -226,30 +226,30 @@ def show_answer():
         x_alg = make_q(True)
         flash("Well done that's right. Here's another one.")
     else:
-        record_is_wrong(x_alg.q_type)
+        record_is_wrong(x_alg.variable['q_type'])
 
         x_alg = make_q(False)
         flash("Oops! That is wrong. Try again.")
 
-    if x_alg.q_type == 1:
+    if x_alg.variable['q_type'] == 1:
         return render_template('show_question.html',
                                qNum=session['_q_count'],
                                error=error,
-                               formula_1=x_alg.disp1,
-                               formula_2=x_alg.disp2)
+                               formula_1=x_alg.variable['disp1'],
+                               formula_2=x_alg.variable['disp2'])
 
-    if x_alg.q_type == 2:
+    if x_alg.variable['q_type'] == 2:
         return render_template('show_expand.html',
                                qNum=session['_q_count'],
                                error=error,
-                               unexpanded=x_alg.exp_question)
+                               unexpanded=x_alg.variable['exp_question'])
 
-    if x_alg.q_type == 3:
+    if x_alg.variable['q_type'] == 3:
         return render_template('show_heron.html',
                                qNum=session['_q_count'],
-                               side_a=x_alg.side[0],
-                               side_b=x_alg.side[1],
-                               side_c=x_alg.side[2])
+                               side_a=x_alg.variable['side'][0],
+                               side_b=x_alg.variable['side'][1],
+                               side_c=x_alg.variable['side'][2])
 
     return render_template('start_up.html')
 
