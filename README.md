@@ -9,6 +9,8 @@ The app asks 3 questions - simple linear simultaneous equations.
 
 Once the 3 questions have been answered, the app uses salt to turn Internet access back on on his gaming computer.
 
+It can be tried out at: https://algebra.ellisbs.co.uk
+
 Docker
 ======
 
