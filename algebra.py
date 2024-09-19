@@ -40,6 +40,7 @@ class Algebra:
             self.variable['disp1'] = self.display_question(self.variable['a'], self.variable['b'], self.variable['c'], self.variable['d'])
             self.variable['disp2'] = self.display_question(self.variable['e'], self.variable['f'], self.variable['g'], self.variable['h'])
             if self.calculate_simultaneous():
+                print(f"Answer is: X = {self.variable['x']}, Y = {self.variable['y']}")
                 break
 
     def set_random_coefficients(self):
@@ -101,6 +102,7 @@ class Algebra:
             self.variable['side'] = [random.randint(1, 10) for _ in range(3)]
             if self.is_valid_triangle(self.variable['side']):
                 self.calculate_heron()
+                print(f"Answer is: Area = {self.variable['heron']}")
                 break
 
     def is_valid_triangle(self, sides):
