@@ -1,2 +1,5 @@
 *.pyc
 database/results.db
+src/algebraenforcer.egg-info
+src/algebraenforcer/__pycache__
+.chunkwrap_state

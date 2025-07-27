@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "algebraenforcer"
+version = "0.1.0"
+description = "Helps kids practice algebra with gamified Q&A"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "blinker==1.9.0",
+    "click==8.1.7",
+    "Flask==3.0.3",
+    "itsdangerous==2.2.0",
+    "Jinja2==3.1.4",
+    "MarkupSafe==2.1.5",
+    "PyYAML==6.0.2",
+    "setuptools==75.1.0",
+    "Werkzeug==3.0.4"
+]
+
+[tool.setuptools]
+packages = ["algebraenforcer"]
+package-dir = {"" = "src"}
+
+[tool.setuptools.package-data]
+"algebraenforcer" = ["*.yaml"]
+
+[project.optional-dependencies]
+dev = [
+    "build>=1.2.2.post1",
+    "pytest>=6.0.0",
+    "pytest-mock>=3.14.1",
+    "pytest-cov>=2.0.0",
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+    "mypy>=0.910",
+    "twine>=6.1.0"
+]
